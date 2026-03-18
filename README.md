@@ -1,4 +1,4 @@
-# 🗂️ Kanban Board
+# 🗂️ Családi app
 
 Teljes funkcionalitású lokális kanban tábla — Next.js 14, shadcn/ui, Prisma + SQLite, dnd-kit.
 
