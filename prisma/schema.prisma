@@ -1,0 +1,254 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ── Kanban ────────────────────────────────────────────────────────────────────
+
+model Board {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  color       String   @default("#6366f1")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  columns     Column[]
+}
+
+model Column {
+  id        String   @id @default(cuid())
+  title     String
+  order     Int
+  color     String   @default("#64748b")
+  boardId   String
+  board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  cards     Card[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Card {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  order       Int
+  priority    String   @default("MEDIUM")
+  dueDate     DateTime?
+  tags        Tag[]
+  assignees   Person[]
+  columnId    String
+  column      Column   @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Tag {
+  id    String @id @default(cuid())
+  name  String
+  color String @default("#6366f1")
+  cards Card[]
+}
+
+// ── Személyek ─────────────────────────────────────────────────────────────────
+
+model Person {
+  id            String        @id @default(cuid())
+  name          String
+  avatarUrl     String?
+  cards         Card[]
+  notes         Note[]
+  photos        Photo[]
+  anniversaries Anniversary[]
+  wallMessages  WallMessage[]
+  healthEntries HealthEntry[]
+  pollVotes     PollVote[]
+  expenses      Expense[]
+  expenseSplits Expense[]     @relation("ExpenseSplit")
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+// ── Jegyzetek ─────────────────────────────────────────────────────────────────
+
+model Note {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  personId  String?
+  person    Person?  @relation(fields: [personId], references: [id], onDelete: SetNull)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ── Naptár ────────────────────────────────────────────────────────────────────
+
+model Event {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  startDate   DateTime
+  endDate     DateTime?
+  allDay      Boolean   @default(false)
+  color       String    @default("#6366f1")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// ── Galéria ───────────────────────────────────────────────────────────────────
+
+model Album {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  coverUrl    String?
+  photos      Photo[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Photo {
+  id        String   @id @default(cuid())
+  url       String
+  caption   String?
+  albumId   String?
+  album     Album?   @relation(fields: [albumId], references: [id], onDelete: SetNull)
+  personId  String?
+  person    Person?  @relation(fields: [personId], references: [id], onDelete: SetNull)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ── Közös kassza ──────────────────────────────────────────────────────────────
+
+model Expense {
+  id         String   @id @default(cuid())
+  title      String
+  amount     Float
+  category   String?
+  paidById   String
+  paidBy     Person   @relation(fields: [paidById], references: [id])
+  splitWith  Person[] @relation("ExpenseSplit")
+  date       DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+// ── Heti étlap ────────────────────────────────────────────────────────────────
+
+model MealPlan {
+  id        String   @id @default(cuid())
+  weekStart DateTime
+  meals     Meal[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Meal {
+  id          String         @id @default(cuid())
+  dayOfWeek   Int
+  mealType    String
+  name        String
+  recipe      String?
+  mealPlanId  String
+  mealPlan    MealPlan       @relation(fields: [mealPlanId], references: [id], onDelete: Cascade)
+  ingredients ShoppingItem[]
+  createdAt   DateTime       @default(now())
+}
+
+model ShoppingItem {
+  id        String   @id @default(cuid())
+  name      String
+  amount    String?
+  checked   Boolean  @default(false)
+  mealId    String?
+  meal      Meal?    @relation(fields: [mealId], references: [id], onDelete: SetNull)
+  createdAt DateTime @default(now())
+}
+
+// ── Leltár ────────────────────────────────────────────────────────────────────
+
+model InventoryItem {
+  id             String    @id @default(cuid())
+  name           String
+  category       String?
+  location       String?
+  purchaseDate   DateTime?
+  warrantyExpiry DateTime?
+  contractExpiry DateTime?
+  notes          String?
+  documentUrl    String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+// ── Születésnapok / Évfordulók ────────────────────────────────────────────────
+
+model Anniversary {
+  id               String   @id @default(cuid())
+  title            String
+  type             String   @default("birthday")
+  date             DateTime
+  personId         String?
+  person           Person?  @relation(fields: [personId], references: [id], onDelete: SetNull)
+  remindDaysBefore Int      @default(7)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+// ── Üzenőfal ──────────────────────────────────────────────────────────────────
+
+model WallMessage {
+  id        String   @id @default(cuid())
+  content   String
+  authorId  String
+  author    Person   @relation(fields: [authorId], references: [id])
+  pinned    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+// ── Egészségügyi napló ────────────────────────────────────────────────────────
+
+model HealthEntry {
+  id        String    @id @default(cuid())
+  type      String
+  title     String
+  date      DateTime
+  nextDate  DateTime?
+  notes     String?
+  personId  String
+  person    Person    @relation(fields: [personId], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+// ── Szavazás ──────────────────────────────────────────────────────────────────
+
+model Poll {
+  id        String       @id @default(cuid())
+  question  String
+  closedAt  DateTime?
+  options   PollOption[]
+  createdAt DateTime     @default(now())
+}
+
+model PollOption {
+  id      String     @id @default(cuid())
+  text    String
+  pollId  String
+  poll    Poll       @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  votes   PollVote[]
+}
+
+model PollVote {
+  id        String     @id @default(cuid())
+  optionId  String
+  option    PollOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  personId  String
+  person    Person     @relation(fields: [personId], references: [id])
+  createdAt DateTime   @default(now())
+
+  @@unique([optionId, personId])
+}

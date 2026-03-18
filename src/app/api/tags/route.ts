@@ -1,0 +1,23 @@
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+
+export async function GET() {
+  try {
+    const tags = await prisma.tag.findMany({ orderBy: { name: "asc" } });
+    return NextResponse.json(tags);
+  } catch {
+    return NextResponse.json({ error: "Failed to fetch tags" }, { status: 500 });
+  }
+}
+
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+    const tag = await prisma.tag.create({
+      data: { name: body.name, color: body.color ?? "#6366f1" },
+    });
+    return NextResponse.json(tag, { status: 201 });
+  } catch {
+    return NextResponse.json({ error: "Failed to create tag" }, { status: 500 });
+  }
+}
