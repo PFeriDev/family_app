@@ -1,82 +1,124 @@
-# 🗂️ Családi app
+🏠 OtthonPont – A Családi App
 
-Teljes funkcionalitású lokális kanban tábla — Next.js 14, shadcn/ui, Prisma + SQLite, dnd-kit.
+Egy lokálisan futtatható családi menedzsment alkalmazás, amely segíti a mindennapi szervezést, kommunikációt és háztartási feladatok kezelését.
 
-## 🚀 Első indítás
+A rendszer több modult tartalmaz, például:
 
-### 1. Függőségek telepítése
-```bash
+családi üzenőfal
+
+naptár és események
+
+kiadáskezelés
+
+étkezési terv
+
+jegyzetek és szavazások
+
+készletkezelés és galéria
+
+🚀 Első indítás
+1. Függőségek telepítése
 npm install
-```
-
-### 2. Adatbázis inicializálása
-```bash
+2. Adatbázis inicializálása
 npx prisma db push
-```
-
-### 3. (Opcionális) Demo adatok betöltése
-```bash
+3. (Opcionális) Demo adatok betöltése
 npm run db:seed
-```
-
-### 4. Fejlesztői szerver indítása
-```bash
+4. Fejlesztői szerver indítása
 npm run dev
-```
 
-A board elérhető: **http://localhost:3000**
+Az alkalmazás elérhető:
+👉 http://localhost:3000
 
----
-
-## 🗂️ Projekt struktúra
-
-```
+🗂️ Projekt struktúra
 src/
 ├── app/
-│   ├── api/
-│   │   ├── boards/          # Board CRUD
-│   │   ├── columns/         # Column CRUD
-│   │   ├── cards/           # Card CRUD + move
-│   │   └── tags/            # Tag kezelés
-│   ├── boards/
-│   │   ├── [id]/page.tsx    # Kanban nézet
-│   │   └── new/page.tsx     # Új tábla
-│   └── page.tsx             # Board lista
-├── components/
-│   ├── kanban/
-│   │   ├── KanbanBoard.tsx  # Fő board + DnD logika
-│   │   ├── KanbanColumn.tsx # Oszlop komponens
-│   │   ├── KanbanCard.tsx   # Kártya komponens
-│   │   ├── CardForm.tsx     # Kártya dialóg
-│   │   └── ColumnForm.tsx   # Oszlop dialóg
-│   ├── widgets/             # Kis, újrahasználható komponensek
-│   │   ├── PriorityBadge.tsx
-│   │   ├── DueDateBadge.tsx
-│   │   ├── TagChip.tsx
-│   │   ├── CardCount.tsx
-│   │   ├── ColorDot.tsx
-│   │   └── EmptyColumnPlaceholder.tsx
-│   └── ui/                  # shadcn/ui komponensek
+│   ├── api/                 # Backend API route-ok
+│   │   ├── wall/            # Üzenőfal (posztok)
+│   │   ├── polls/           # Szavazások
+│   │   ├── notes/           # Jegyzetek
+│   │   ├── expenses/        # Kiadások kezelése
+│   │   ├── meal-plans/      # Étkezési tervek
+│   │   └── ...              # Egyéb modulok API-ja
+│   │
+│   ├── wall/                # Üzenőfal oldal
+│   ├── calendar/            # Naptár nézet
+│   ├── expenses/            # Kiadáskezelés UI
+│   ├── gallery/             # Galéria
+│   ├── health/              # Egészség adatok
+│   ├── inventory/           # Készletkezelés
+│   ├── notes/               # Jegyzetek
+│   ├── polls/               # Szavazások
+│   ├── meal-plan/           # Étkezési terv
+│   ├── anniversaries/       # Évfordulók
+│   ├── boards/              # Táblák (pl. feladatok)
+│   └── page.tsx             # Főoldal / dashboard
+│
+├── components/              # Újrahasználható komponensek
+│   ├── ui/                  # shadcn/ui elemek
+│   └── ...                  # Modul specifikus komponensek
+│
 ├── lib/
-│   ├── prisma.ts            # Prisma kliens singleton
-│   └── utils.ts             # cn(), prioritás config, dátum utils
+│   ├── prisma.ts            # Prisma kliens
+│   └── utils.ts             # Segédfüggvények
+│
 └── types/
     └── index.ts             # TypeScript típusok
-```
+✨ Funkciók
+👨‍👩‍👧‍👦 Családi kommunikáció
 
-## ✨ Funkciók
+Üzenőfal (posztok megosztása)
 
-- **Drag & Drop** — kártyák mozgatása oszlopok között és belül
-- **Kártyák** — cím, leírás, prioritás (Low/Medium/High/Urgent), határidő, színes címkék
-- **Oszlopok** — cím + szín szerkesztése, törlés
-- **Több tábla** — tetszőleges számú kanban tábla
-- **Dark mode** — automatikus + manuális kapcsoló
-- **SQLite** — lokális adatbázis, semmi cloud
+Szavazások létrehozása
 
-## 🔧 Hasznos parancsok
+Jegyzetek kezelése
 
-```bash
-npm run db:studio   # Prisma Studio (adatbázis böngésző)
-npm run db:seed     # Demo adatok újratöltése
+📅 Szervezés
+
+Naptár és események
+
+Évfordulók nyilvántartása
+
+Étkezési terv készítése
+
+💰 Háztartás menedzsment
+
+Kiadások követése
+
+Készletkezelés
+
+Egészség adatok kezelése
+
+🖼️ Média
+
+Képgaléria
+
+⚙️ Technikai jellemzők
+
+Lokális futtatás (nincs cloud)
+
+SQLite adatbázis
+
+Reszponzív UI
+
+Komponens alapú felépítés
+
+🧱 Technológiai stack
+
+Next.js – full-stack React framework
+
+TypeScript – típusbiztos fejlesztés
+
+Prisma + SQLite – adatbázis
+
+Tailwind CSS – styling
+
+shadcn/ui – UI komponensek
+
+🔧 Hasznos parancsok
+npm run db:studio      # Prisma Studio (adatbázis kezelő)
+npm run db:seed        # Demo adatok betöltése
 npx prisma migrate reset  # Adatbázis reset
-```
+📌 Megjegyzés
+
+Az alkalmazás lokális használatra készült, elsősorban családok számára.
+Nem tartalmaz felhasználókezelést vagy publikus hozzáférést.
