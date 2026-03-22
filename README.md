@@ -17,13 +17,26 @@ jegyzetek és szavazások
 készletkezelés és galéria
 
 🚀 Első indítás
-1. Függőségek telepítése
-npm install
-2. Adatbázis inicializálása
+1. Letöltés GitHub-ról
+
+GitHub repo oldalán: Code → Download ZIP
+Kicsomagolás pl. ide: C:\DUE\ (ne legyen ékezet, szóköz, speciális karakter az útvonalban)
+
+2. Node.js telepítése
+
+Menj a nodejs.org oldalra
+Töltsd le az LTS verziót (bal oldali gomb)
+Telepítő végigkattintása, alapértelmezett beállítások maradhatnak
+Ellenőrzés telepítés után:
+
+node -v
+npm -v
+
+3. Parancsok sorban
+npm install --legacy-peer-deps
+echo DATABASE_URL="file:./dev.db" > .env
+npx prisma generate
 npx prisma db push
-3. (Opcionális) Demo adatok betöltése
-npm run db:seed
-4. Fejlesztői szerver indítása
 npm run dev
 
 Az alkalmazás elérhető:
